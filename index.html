@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BekuLezat — Shaken Frozen Food</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./style.css">
+</head>
+<body>
+
+<!-- ======================= HEADER ======================= -->
+<header class="site-header" id="header">
+  <div class="container header-inner">
+    <a href="#top" class="logo">Beku<span>Lezat</span></a>
+
+    <nav class="main-nav" id="mainNav">
+      <a href="#tentang">Tentang</a>
+      <a href="#keunggulan">Keunggulan</a>
+      <a href="#menu">Menu</a>
+      <a href="#testimoni">Testimoni</a>
+      <a href="#pesan">Pesan</a>
+    </nav>
+
+    <div class="header-actions">
+      <button class="cart-btn" id="cartToggle" aria-label="Buka keranjang">
+        🛒 <span class="cart-count" id="cartCount">0</span>
+      </button>
+      <button class="menu-toggle" id="menuToggle" aria-label="Buka menu">☰</button>
+    </div>
+  </div>
+</header>
+
+<!-- ======================= HERO ======================= -->
+<section class="hero" id="top">
+  <div class="container hero-inner">
+    <div class="hero-text">
+      <p class="hero-eyebrow">Shaken Frozen Food 🔥🧊</p>
+      <h1>Digoreng Garing,<br>Dikocok <span>Sambal</span>, Nagih.</h1>
+      <p class="hero-desc">
+        Bakso, sosis, nugget, dan otak-otak digoreng garing lalu dikocok bareng sambal
+        home-made pilihanmu. Ada juga paket frozen mentah vakum buat stok kulkas kos.
+      </p>
+      <div class="hero-cta">
+        <a href="#menu" class="btn btn-primary">Lihat Menu</a>
+        <a href="#tentang" class="btn btn-outline">Kenalan Dulu</a>
+      </div>
+      <div class="hero-badges">
+        <span>🧼 Kemasan Hygienic</span>
+        <span>🌶️ Sambal Home-made</span>
+        <span>⚡ Praktis Tinggal Kocok</span>
+      </div>
+    </div>
+
+    <div class="hero-visual" aria-hidden="true">
+      <div class="hero-blob"></div>
+      <div class="hero-card hero-card-1">🥡<small>Shaken Bites</small></div>
+      <div class="hero-card hero-card-2">🌶️<small>Sambal Pilihan</small></div>
+      <div class="hero-card hero-card-3">🧊<small>Frozen Mentah</small></div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= TENTANG BRAND ======================= -->
+<section class="section" id="tentang">
+  <div class="container about-layout">
+    <div class="about-visual" aria-hidden="true">
+      <div class="about-badge">🔥🧊</div>
+    </div>
+    <div class="about-text">
+      <p class="section-eyebrow">Cerita Kami</p>
+      <h2>Kenapa Ada BekuLezat?</h2>
+      <p class="section-desc">
+        BekuLezat lahir dari kebiasaan anak kos yang pengen jajan enak tanpa ribet keluar rumah.
+        Kami olah bakso, sosis, nugget, dan otak-otak favorit, goreng sampai garing, lalu kocok
+        bareng sambal racikan sendiri sampai bumbunya nempel merata di setiap gigitan.
+      </p>
+      <p class="section-desc">
+        Selain versi siap-kocok, kami juga sediakan paket frozen mentah vakum — tinggal simpan
+        di freezer, goreng kapan pun laper melanda. Cocok buat stok mingguan di kos atau kontrakan.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= KEUNGGULAN ======================= -->
+<section class="section section-alt" id="keunggulan">
+  <div class="container">
+    <div class="section-head">
+      <p class="section-eyebrow">Kenapa Pilih Kami</p>
+      <h2>Keunggulan Produk</h2>
+    </div>
+
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="feature-icon">🧼</div>
+        <h3>Kemasan Hygienic</h3>
+        <p>Dikemas rapat pakai standing pouch food-grade, aman dan bersih sampai tangan kamu.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🌶️</div>
+        <h3>Sambal Home-made</h3>
+        <p>Diracik sendiri tiap hari, bukan sambal botolan — rasa lebih nendang dan otentik.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">⚡</div>
+        <h3>Praktis Tinggal Kocok</h3>
+        <p>Goreng, tuang sambal, kocok dalam wadah tertutup, langsung siap disantap.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= KATALOG MENU ======================= -->
+<section class="section" id="menu">
+  <div class="container">
+    <div class="section-head">
+      <p class="section-eyebrow">Menu Andalan</p>
+      <h2>Katalog Menu</h2>
+      <p class="section-desc">Pilih menu, atur sambal &amp; jumlahnya, lalu masukkan ke keranjang.</p>
+    </div>
+
+    <div class="product-grid" id="productGrid">
+      <!-- Produk dirender otomatis oleh script.js dari array PRODUCTS -->
+    </div>
+  </div>
+</section>
+
+<!-- ======================= TESTIMONI ======================= -->
+<section class="section section-alt" id="testimoni">
+  <div class="container">
+    <div class="section-head">
+      <p class="section-eyebrow">Kata Mereka</p>
+      <h2>Testimoni Pelanggan</h2>
+    </div>
+
+    <div class="testimoni-grid">
+      <div class="testimoni-card">
+        <div class="testimoni-stars">⭐⭐⭐⭐⭐</div>
+        <p>"Shaken Bites Chili Oil-nya juara, sambalnya nempel rata sampai ke dalam nugget. Anak kos wajib coba!"</p>
+        <div class="testimoni-author">
+          <div class="testimoni-avatar">RA</div>
+          <div>
+            <strong>Rani A.</strong>
+            <span>Mahasiswa, Solo</span>
+          </div>
+        </div>
+      </div>
+      <div class="testimoni-card">
+        <div class="testimoni-stars">⭐⭐⭐⭐⭐</div>
+        <p>"Paket Mix Frozen Mentahnya menyelamatkan hidup pas tanggal tua. Tinggal goreng, kocok, kelar."</p>
+        <div class="testimoni-author">
+          <div class="testimoni-avatar">DP</div>
+          <div>
+            <strong>Dimas P.</strong>
+            <span>Karyawan, Sukoharjo</span>
+          </div>
+        </div>
+      </div>
+      <div class="testimoni-card">
+        <div class="testimoni-stars">⭐⭐⭐⭐⭐</div>
+        <p>"Order Paket Nobar Hemat buat rame-rame sama temen kosan, porsinya pas dan sambalnya bisa milih sendiri."</p>
+        <div class="testimoni-author">
+          <div class="testimoni-avatar">SF</div>
+          <div>
+            <strong>Salma F.</strong>
+            <span>Mahasiswa, Karanganyar</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= FORM PEMESANAN ======================= -->
+<section class="section" id="pesan">
+  <div class="container form-layout">
+
+    <div class="form-side">
+      <div class="section-head section-head-left">
+        <p class="section-eyebrow">Terakhir</p>
+        <h2>Form Pemesanan</h2>
+        <p class="section-desc">Isi data berikut, keranjangmu otomatis disertakan saat checkout.</p>
+      </div>
+
+      <form id="orderForm" class="order-form">
+        <label>
+          Nama Lengkap
+          <input type="text" id="custName" placeholder="cth. Budi Santoso" required>
+        </label>
+
+        <label>
+          Nomor WhatsApp
+          <input type="tel" id="custPhone" placeholder="cth. 081234567890" required>
+        </label>
+
+        <label>
+          Alamat Lengkap
+          <textarea id="custAddress" rows="3" placeholder="Nama jalan, no rumah/kos, RT/RW, kecamatan, kota" required></textarea>
+        </label>
+
+        <label>
+          Metode Pengambilan
+          <select id="deliveryMethod">
+            <option value="Diantar (Delivery)">Diantar (Delivery)</option>
+            <option value="Ambil Sendiri (Pickup)">Ambil Sendiri (Pickup)</option>
+          </select>
+        </label>
+
+        <label>
+          Catatan Tambahan (opsional)
+          <textarea id="custNote" rows="2" placeholder="cth. sambal dipisah, dikirim malam hari, dll."></textarea>
+        </label>
+
+        <button type="submit" class="btn btn-primary btn-block">
+          Checkout via WhatsApp 🟢
+        </button>
+        <p class="form-hint">Klik tombol di atas untuk mengirim rincian pesanan langsung ke WhatsApp admin kami.</p>
+      </form>
+    </div>
+
+    <div class="cart-side">
+      <div class="cart-summary-card">
+        <h3>Ringkasan Keranjang</h3>
+        <div id="summaryItems" class="summary-items">
+          <p class="empty-note">Keranjang masih kosong. Yuk pilih menu dulu 👆</p>
+        </div>
+        <div class="summary-total">
+          <span>Total</span>
+          <strong id="summaryTotal">Rp 0</strong>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ======================= FOOTER ======================= -->
+<footer class="site-footer" id="kontak">
+  <div class="container footer-inner">
+    <div>
+      <a href="#top" class="logo logo-footer">Beku<span>Lezat</span></a>
+      <p>Shaken frozen food dengan sambal home-made — digoreng garing, dikocok nagih, tinggal santap.</p>
+    </div>
+    <div class="footer-contact">
+      <h4>Kontak &amp; Jam Operasional</h4>
+      <p>📍 Surakarta, Jawa Tengah</p>
+      <p>📱 WhatsApp: 0896-7378-7320</p>
+      <p>🕒 Setiap hari, 10.00 – 21.00 WIB</p>
+    </div>
+  </div>
+  <p class="footer-copy">&copy; <span id="year"></span> BekuLezat Shaken Frozen Food. Semua hak cipta dilindungi.</p>
+</footer>
+
+<!-- ======================= CART DRAWER ======================= -->
+<div class="cart-overlay" id="cartOverlay"></div>
+<aside class="cart-drawer" id="cartDrawer">
+  <div class="cart-drawer-head">
+    <h3>Keranjang Saya</h3>
+    <button id="cartClose" aria-label="Tutup keranjang">✕</button>
+  </div>
+  <div class="cart-drawer-items" id="cartItems">
+    <p class="empty-note">Keranjang masih kosong.</p>
+  </div>
+  <div class="cart-drawer-footer">
+    <div class="cart-drawer-total">
+      <span>Total</span>
+      <strong id="drawerTotal">Rp 0</strong>
+    </div>
+    <a href="#pesan" class="btn btn-primary btn-block" id="goToForm">Lanjut ke Form Pemesanan</a>
+  </div>
+</aside>
+
+<script src="script.js"></script>
+</body>
+</html>
