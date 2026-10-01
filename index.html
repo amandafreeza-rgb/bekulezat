@@ -1,277 +1,445 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BekuLezat — Shaken Frozen Food</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="./style.css">
-</head>
-<body>
+/* =========================================================
+   BEKULEZAT — SHAKEN FROZEN FOOD (STREET FOOD VIBES)
+   Logika: render katalog, testimoni, keranjang, total, checkout WA
+   ========================================================= */
 
-<!-- ======================= HEADER ======================= -->
-<header class="site-header" id="header">
-  <div class="container header-inner">
-    <a href="#top" class="logo">Beku<span>Lezat</span></a>
+/* -----------------------------------------------------------
+   1. PENGATURAN TOKO — EDIT DI SINI
+   ----------------------------------------------------------- */
 
-    <nav class="main-nav" id="mainNav">
-      <a href="#tentang">Tentang</a>
-      <a href="#keunggulan">Keunggulan</a>
-      <a href="#menu">Menu</a>
-      <a href="#testimoni">Testimoni</a>
-      <a href="#pesan">Pesan</a>
-    </nav>
+// Nomor WhatsApp admin, format: kode negara TANPA "+" dan TANPA angka 0 di depan.
+// Contoh: nomor 0896-7378-7320 ditulis menjadi "6289673787320"
+const NOMOR_WA_ADMIN = "6289673787320";
 
-    <div class="header-actions">
-      <button class="cart-btn" id="cartToggle" aria-label="Buka keranjang">
-        🛒 <span class="cart-count" id="cartCount">0</span>
-      </button>
-      <button class="menu-toggle" id="menuToggle" aria-label="Buka menu">☰</button>
-    </div>
-  </div>
-</header>
+// Daftar produk. Silakan tambah, hapus, atau edit langsung di sini.
+// icon         : emoji placeholder foto produk (lihat komentar "GANTI FOTO" di renderCatalog() untuk ganti ke <img> asli)
+// price        : harga dalam Rupiah (angka biasa, tanpa titik/koma)
+// tag          : label kecil di pojok foto (opsional, boleh dikosongkan jadi "")
+// flavors      : daftar pilihan sambal/bumbu. Kosongkan array [] kalau produk tidak butuh pilihan sambal.
+const PRODUCTS = [
+  {
+    id: "baso-nugget-bawang",
+    name: "Baso & Nugget Kocok Gurih Bawang (Pedas Mantap)",
+    tag: "Best Seller 🔥",
+    desc: "Mix bakso, sosis, nugget & otak-otak digoreng garing, dikocok sambal bawang gurih nagih.",
+    price: 20000,
+    unit: "porsi",
+    icon: "🥡",
+    flavors: ["Pedas Sedang", "Extra Pedas 🔥🔥"]
+  },
+  {
+    id: "mix-bites-chili-oil",
+    name: "Mix Bites Kocok Chili Oil Pedas Dower",
+    tag: "Pedas Dower 🌶️",
+    desc: "Mix bakso, sosis, nugget & otak-otak dikocok bareng chili oil, pedasnya bikin nagih.",
+    price: 22000,
+    unit: "porsi",
+    icon: "🌶️",
+    flavors: ["Chili Oil Sedang", "Chili Oil Extra Pedas 🔥🔥🔥"]
+  },
+  {
+    id: "paket-mentah-anti-lapar",
+    name: "Paket Mentah Anti-Lapar (Siap Goreng + Sambal Free)",
+    tag: "Stok Kos 🧊",
+    desc: "Paket vakum mentah (bakso, sosis, nugget, otak-otak) + sambal gratis, tinggal simpan di freezer.",
+    price: 35000,
+    unit: "paket",
+    icon: "🧊",
+    flavors: ["Sambal Bawang", "Sambal Chili Oil"]
+  },
+  {
+    id: "paket-nobar-rame",
+    name: "Paket Nobar Rame-Rame (Isi Melimpah)",
+    tag: "Buat 3-4 Orang",
+    desc: "Porsi jumbo campuran semua item, pas buat nobar bareng temen kos, isinya melimpah.",
+    price: 45000,
+    unit: "paket besar",
+    icon: "🍿",
+    flavors: ["Sambal Bawang", "Sambal Chili Oil", "Campur (Bawang + Chili Oil)"]
+  }
+];
 
-<!-- ======================= HERO ======================= -->
-<section class="hero" id="top">
-  <div class="container hero-inner">
-    <div class="hero-text">
-      <p class="hero-eyebrow">Shaken Frozen Food 🔥🧊</p>
-      <h1>Digoreng Garing,<br>Dikocok <span>Sambal</span>, Nagih.</h1>
-      <p class="hero-desc">
-        Bakso, sosis, nugget, dan otak-otak digoreng garing lalu dikocok bareng sambal
-        home-made pilihanmu. Ada juga paket frozen mentah vakum buat stok kulkas kos.
-      </p>
-      <div class="hero-cta">
-        <a href="#menu" class="btn btn-primary">Lihat Menu</a>
-        <a href="#tentang" class="btn btn-outline">Kenalan Dulu</a>
-      </div>
-      <div class="hero-badges">
-        <span>🧼 Kemasan Hygienic</span>
-        <span>🌶️ Sambal Home-made</span>
-        <span>⚡ Praktis Tinggal Kocok</span>
-      </div>
-    </div>
+// Daftar testimoni. "photo" pakai i.pravatar.cc (foto wajah dummy, otomatis bulat & rapi).
+// Kalau sudah punya foto pelanggan asli, tinggal ganti URL "photo" dengan path foto lokal, misal "images/testi-rian.jpg".
+const TESTIMONIALS = [
+  {
+    name: "Rian",
+    identity: "Anak Kos Gang 3",
+    photo: "https://i.pravatar.cc/150?img=12",
+    rating: 5,
+    review: "Gilaa sambalnya nempel rata banget sampe ke dalem nugget, laper jam 11 malem langsung aman 🔥🔥"
+  },
+  {
+    name: "Dinda",
+    identity: "Kos Putri Melati",
+    photo: "https://i.pravatar.cc/150?img=47",
+    rating: 5,
+    review: "Paket mentahnya penyelamat tanggal tua wkwk, tinggal goreng doang udah kenyang + sambalnya gratis pula"
+  },
+  {
+    name: "Fajar",
+    identity: "Mahasiswa Rantau",
+    photo: "https://i.pravatar.cc/150?img=33",
+    rating: 4,
+    review: "Request pedas extra beneran nendang, cocok buat yang kuat pedes. Pengirimannya juga cepet, mantap"
+  },
+  {
+    name: "Nadia",
+    identity: "Anak Kos Gang Buntu",
+    photo: "https://i.pravatar.cc/150?img=25",
+    rating: 5,
+    review: "Beli Paket Nobar buat rame-rame temen sekosan, porsinya banyak banget worth it buat dibagi berempat"
+  }
+];
 
-    <div class="hero-visual" aria-hidden="true">
-      <div class="hero-blob"></div>
-      <div class="hero-card hero-card-1">🥡<small>Shaken Bites</small></div>
-      <div class="hero-card hero-card-2">🌶️<small>Sambal Pilihan</small></div>
-      <div class="hero-card hero-card-3">🧊<small>Frozen Mentah</small></div>
-    </div>
-  </div>
-</section>
+/* -----------------------------------------------------------
+   2. STATE KERANJANG
+   ----------------------------------------------------------- */
 
-<!-- ======================= TENTANG BRAND ======================= -->
-<section class="section" id="tentang">
-  <div class="container about-layout">
-    <div class="about-visual" aria-hidden="true">
-      <div class="about-badge">🔥🧊</div>
-    </div>
-    <div class="about-text">
-      <p class="section-eyebrow">Cerita Kami</p>
-      <h2>Kenapa Ada BekuLezat?</h2>
-      <p class="section-desc">
-        BekuLezat lahir dari kebiasaan anak kos yang pengen jajan enak tanpa ribet keluar rumah.
-        Kami olah bakso, sosis, nugget, dan otak-otak favorit, goreng sampai garing, lalu kocok
-        bareng sambal racikan sendiri sampai bumbunya nempel merata di setiap gigitan.
-      </p>
-      <p class="section-desc">
-        Selain versi siap-kocok, kami juga sediakan paket frozen mentah vakum — tinggal simpan
-        di freezer, goreng kapan pun laper melanda. Cocok buat stok mingguan di kos atau kontrakan.
-      </p>
-    </div>
-  </div>
-</section>
+// Struktur cart: { "baso-nugget-bawang::Pedas Sedang": { productId, flavor, qty }, ... }
+let cart = loadCart();
 
-<!-- ======================= KEUNGGULAN ======================= -->
-<section class="section section-alt" id="keunggulan">
-  <div class="container">
-    <div class="section-head">
-      <p class="section-eyebrow">Kenapa Pilih Kami</p>
-      <h2>Keunggulan Produk</h2>
-    </div>
+function loadCart() {
+  try {
+    const saved = localStorage.getItem("bekulezat_shaken_cart_v2");
+    return saved ? JSON.parse(saved) : {};
+  } catch (e) {
+    return {};
+  }
+}
 
-    <div class="feature-grid">
-      <div class="feature-card">
-        <div class="feature-icon">🧼</div>
-        <h3>Kemasan Hygienic</h3>
-        <p>Dikemas rapat pakai standing pouch food-grade, aman dan bersih sampai tangan kamu.</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">🌶️</div>
-        <h3>Sambal Home-made</h3>
-        <p>Diracik sendiri tiap hari, bukan sambal botolan — rasa lebih nendang dan otentik.</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">⚡</div>
-        <h3>Praktis Tinggal Kocok</h3>
-        <p>Goreng, tuang sambal, kocok dalam wadah tertutup, langsung siap disantap.</p>
-      </div>
-    </div>
-  </div>
-</section>
+function saveCart() {
+  try {
+    localStorage.setItem("bekulezat_shaken_cart_v2", JSON.stringify(cart));
+  } catch (e) {
+    /* localStorage tidak tersedia, keranjang tetap jalan tapi tidak tersimpan permanen */
+  }
+}
 
-<!-- ======================= KATALOG MENU ======================= -->
-<section class="section" id="menu">
-  <div class="container">
-    <div class="section-head">
-      <p class="section-eyebrow">Menu Andalan</p>
-      <h2>Katalog Menu</h2>
-      <p class="section-desc">Pilih menu, atur sambal &amp; jumlahnya, lalu masukkan ke keranjang.</p>
-    </div>
+function formatRupiah(number) {
+  return "Rp " + number.toLocaleString("id-ID");
+}
 
-    <div class="product-grid" id="productGrid">
-      <!-- Produk dirender otomatis oleh script.js dari array PRODUCTS -->
-    </div>
-  </div>
-</section>
+function getProduct(id) {
+  return PRODUCTS.find((p) => p.id === id);
+}
 
-<!-- ======================= TESTIMONI ======================= -->
-<section class="section section-alt" id="testimoni">
-  <div class="container">
-    <div class="section-head">
-      <p class="section-eyebrow">Kata Mereka</p>
-      <h2>Testimoni Pelanggan</h2>
-    </div>
+function makeCartKey(productId, flavor) {
+  return `${productId}::${flavor || "-"}`;
+}
 
-    <div class="testimoni-grid">
-      <div class="testimoni-card">
-        <div class="testimoni-stars">⭐⭐⭐⭐⭐</div>
-        <p>"Shaken Bites Chili Oil-nya juara, sambalnya nempel rata sampai ke dalam nugget. Anak kos wajib coba!"</p>
-        <div class="testimoni-author">
-          <div class="testimoni-avatar">RA</div>
-          <div>
-            <strong>Rani A.</strong>
-            <span>Mahasiswa, Solo</span>
-          </div>
-        </div>
-      </div>
-      <div class="testimoni-card">
-        <div class="testimoni-stars">⭐⭐⭐⭐⭐</div>
-        <p>"Paket Mix Frozen Mentahnya menyelamatkan hidup pas tanggal tua. Tinggal goreng, kocok, kelar."</p>
-        <div class="testimoni-author">
-          <div class="testimoni-avatar">DP</div>
-          <div>
-            <strong>Dimas P.</strong>
-            <span>Karyawan, Sukoharjo</span>
-          </div>
-        </div>
-      </div>
-      <div class="testimoni-card">
-        <div class="testimoni-stars">⭐⭐⭐⭐⭐</div>
-        <p>"Order Paket Nobar Hemat buat rame-rame sama temen kosan, porsinya pas dan sambalnya bisa milih sendiri."</p>
-        <div class="testimoni-author">
-          <div class="testimoni-avatar">SF</div>
-          <div>
-            <strong>Salma F.</strong>
-            <span>Mahasiswa, Karanganyar</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+function getCartTotal() {
+  let total = 0;
+  for (const key in cart) {
+    const entry = cart[key];
+    const product = getProduct(entry.productId);
+    if (product) total += product.price * entry.qty;
+  }
+  return total;
+}
 
-<!-- ======================= FORM PEMESANAN ======================= -->
-<section class="section" id="pesan">
-  <div class="container form-layout">
+function getCartCount() {
+  return Object.values(cart).reduce((sum, entry) => sum + entry.qty, 0);
+}
 
-    <div class="form-side">
-      <div class="section-head section-head-left">
-        <p class="section-eyebrow">Terakhir</p>
-        <h2>Form Pemesanan</h2>
-        <p class="section-desc">Isi data berikut, keranjangmu otomatis disertakan saat checkout.</p>
-      </div>
+/* -----------------------------------------------------------
+   3. RENDER KATALOG PRODUK
+   ----------------------------------------------------------- */
 
-      <form id="orderForm" class="order-form">
-        <label>
-          Nama Lengkap
-          <input type="text" id="custName" placeholder="cth. Budi Santoso" required>
-        </label>
+const productGrid = document.getElementById("productGrid");
 
-        <label>
-          Nomor WhatsApp
-          <input type="tel" id="custPhone" placeholder="cth. 081234567890" required>
-        </label>
+// Menyimpan jumlah & pilihan sambal sementara (sebelum ditambah ke keranjang) per produk
+const pendingQty = {};
+const pendingFlavor = {};
+PRODUCTS.forEach((p) => {
+  pendingQty[p.id] = 1;
+  pendingFlavor[p.id] = p.flavors && p.flavors.length ? p.flavors[0] : "";
+});
 
-        <label>
-          Alamat Lengkap
-          <textarea id="custAddress" rows="3" placeholder="Nama jalan, no rumah/kos, RT/RW, kecamatan, kota" required></textarea>
-        </label>
-
-        <label>
-          Metode Pengambilan
-          <select id="deliveryMethod">
-            <option value="Diantar (Delivery)">Diantar (Delivery)</option>
-            <option value="Ambil Sendiri (Pickup)">Ambil Sendiri (Pickup)</option>
+function renderCatalog() {
+  productGrid.innerHTML = PRODUCTS.map((product) => {
+    const flavorSelect = product.flavors && product.flavors.length
+      ? `
+        <div class="flavor-row">
+          <label for="flavor-${product.id}">Pilihan Sambal / Bumbu</label>
+          <select id="flavor-${product.id}" data-id="${product.id}" class="flavor-select">
+            ${product.flavors.map((f) => `<option value="${f}">${f}</option>`).join("")}
           </select>
-        </label>
-
-        <label>
-          Catatan Tambahan (opsional)
-          <textarea id="custNote" rows="2" placeholder="cth. sambal dipisah, dikirim malam hari, dll."></textarea>
-        </label>
-
-        <button type="submit" class="btn btn-primary btn-block">
-          Checkout via WhatsApp 🟢
-        </button>
-        <p class="form-hint">Klik tombol di atas untuk mengirim rincian pesanan langsung ke WhatsApp admin kami.</p>
-      </form>
-    </div>
-
-    <div class="cart-side">
-      <div class="cart-summary-card">
-        <h3>Ringkasan Keranjang</h3>
-        <div id="summaryItems" class="summary-items">
-          <p class="empty-note">Keranjang masih kosong. Yuk pilih menu dulu 👆</p>
         </div>
-        <div class="summary-total">
-          <span>Total</span>
-          <strong id="summaryTotal">Rp 0</strong>
+      `
+      : "";
+
+    return `
+      <div class="product-card">
+        <div class="product-photo">
+          <!-- GANTI FOTO: hapus div.photo-illustration ini, ganti dengan
+               <img src="images/${product.id}.jpg" alt="${product.name}" style="width:100%;height:100%;object-fit:cover;">
+               supaya pakai foto produk asli -->
+          <div class="photo-illustration">${product.icon}</div>
+          ${product.tag ? `<span class="product-tag">${product.tag}</span>` : ""}
+        </div>
+        <div class="product-body">
+          <h3>${product.name}</h3>
+          <p class="product-desc">${product.desc}</p>
+          <p class="product-price">
+            ${formatRupiah(product.price)} <small>/ ${product.unit}</small>
+          </p>
+          ${flavorSelect}
+          <div class="qty-row">
+            <button class="qty-btn" data-action="decrease" data-id="${product.id}">−</button>
+            <span class="qty-value" id="qty-${product.id}">1</span>
+            <button class="qty-btn" data-action="increase" data-id="${product.id}">+</button>
+          </div>
+          <button class="add-btn" data-action="add" data-id="${product.id}">+ Tambah ke Keranjang</button>
         </div>
       </div>
-    </div>
+    `;
+  }).join("");
+}
 
-  </div>
-</section>
+productGrid.addEventListener("change", (e) => {
+  if (e.target.classList.contains("flavor-select")) {
+    pendingFlavor[e.target.dataset.id] = e.target.value;
+  }
+});
 
-<!-- ======================= FOOTER ======================= -->
-<footer class="site-footer" id="kontak">
-  <div class="container footer-inner">
-    <div>
-      <a href="#top" class="logo logo-footer">Beku<span>Lezat</span></a>
-      <p>Shaken frozen food dengan sambal home-made — digoreng garing, dikocok nagih, tinggal santap.</p>
-    </div>
-    <div class="footer-contact">
-      <h4>Kontak &amp; Jam Operasional</h4>
-      <p>📍 Surakarta, Jawa Tengah</p>
-      <p>📱 WhatsApp: 0896-7378-7320</p>
-      <p>🕒 Setiap hari, 10.00 – 21.00 WIB</p>
-    </div>
-  </div>
-  <p class="footer-copy">&copy; <span id="year"></span> BekuLezat Shaken Frozen Food. Semua hak cipta dilindungi.</p>
-</footer>
+productGrid.addEventListener("click", (e) => {
+  const btn = e.target.closest("button");
+  if (!btn) return;
 
-<!-- ======================= CART DRAWER ======================= -->
-<div class="cart-overlay" id="cartOverlay"></div>
-<aside class="cart-drawer" id="cartDrawer">
-  <div class="cart-drawer-head">
-    <h3>Keranjang Saya</h3>
-    <button id="cartClose" aria-label="Tutup keranjang">✕</button>
-  </div>
-  <div class="cart-drawer-items" id="cartItems">
-    <p class="empty-note">Keranjang masih kosong.</p>
-  </div>
-  <div class="cart-drawer-footer">
-    <div class="cart-drawer-total">
-      <span>Total</span>
-      <strong id="drawerTotal">Rp 0</strong>
-    </div>
-    <a href="#pesan" class="btn btn-primary btn-block" id="goToForm">Lanjut ke Form Pemesanan</a>
-  </div>
-</aside>
+  const id = btn.dataset.id;
+  const action = btn.dataset.action;
 
-<script src="script.js"></script>
-</body>
-</html>
+  if (action === "increase") {
+    pendingQty[id] += 1;
+    document.getElementById(`qty-${id}`).textContent = pendingQty[id];
+  }
+
+  if (action === "decrease") {
+    pendingQty[id] = Math.max(1, pendingQty[id] - 1);
+    document.getElementById(`qty-${id}`).textContent = pendingQty[id];
+  }
+
+  if (action === "add") {
+    const flavor = pendingFlavor[id] || "";
+    const key = makeCartKey(id, flavor);
+
+    if (cart[key]) {
+      cart[key].qty += pendingQty[id];
+    } else {
+      cart[key] = { productId: id, flavor: flavor, qty: pendingQty[id] };
+    }
+
+    pendingQty[id] = 1;
+    document.getElementById(`qty-${id}`).textContent = 1;
+
+    saveCart();
+    renderCart();
+    openCartDrawer();
+  }
+});
+
+/* -----------------------------------------------------------
+   4. RENDER TESTIMONI
+   ----------------------------------------------------------- */
+
+const testimoniGrid = document.getElementById("testimoniGrid");
+
+function renderTestimonials() {
+  testimoniGrid.innerHTML = TESTIMONIALS.map((t) => {
+    const stars = "⭐".repeat(t.rating) + "☆".repeat(5 - t.rating);
+    return `
+      <div class="testimoni-card">
+        <div class="testimoni-head">
+          <img class="testimoni-avatar" src="${t.photo}" alt="Foto ${t.name}">
+          <div class="testimoni-identity">
+            <strong>${t.name} - ${t.identity}</strong>
+            <span class="verified-badge">✅ Verified Buyer</span>
+          </div>
+        </div>
+        <div class="testimoni-stars">${stars}</div>
+        <div class="testimoni-bubble">${t.review}</div>
+      </div>
+    `;
+  }).join("");
+}
+
+/* -----------------------------------------------------------
+   5. RENDER KERANJANG (drawer + ringkasan di form)
+   ----------------------------------------------------------- */
+
+const cartItemsEl = document.getElementById("cartItems");
+const drawerTotalEl = document.getElementById("drawerTotal");
+const cartCountHeaderEl = document.getElementById("cartCountHeader");
+const cartCountFloatingEl = document.getElementById("cartCountFloating");
+const summaryItemsEl = document.getElementById("summaryItems");
+const summaryTotalEl = document.getElementById("summaryTotal");
+
+function renderCart() {
+  const keys = Object.keys(cart).filter((k) => cart[k].qty > 0);
+  const total = getCartTotal();
+  const count = getCartCount();
+
+  // Badge jumlah item di header & tombol floating
+  cartCountHeaderEl.textContent = count;
+  cartCountFloatingEl.textContent = count;
+
+  // Drawer keranjang
+  if (keys.length === 0) {
+    cartItemsEl.innerHTML = `<p class="empty-note">Keranjang masih kosong.</p>`;
+  } else {
+    cartItemsEl.innerHTML = keys.map((key) => {
+      const entry = cart[key];
+      const product = getProduct(entry.productId);
+      return `
+        <div class="cart-item">
+          <div class="cart-item-icon">${product.icon}</div>
+          <div class="cart-item-info">
+            <h4>${product.name}</h4>
+            ${entry.flavor ? `<p class="cart-item-flavor">${entry.flavor}</p>` : ""}
+            <p>${formatRupiah(product.price)} x ${entry.qty} = ${formatRupiah(product.price * entry.qty)}</p>
+            <div class="cart-item-controls">
+              <button class="qty-btn" data-action="cart-decrease" data-key="${key}">−</button>
+              <span class="qty-value">${entry.qty}</span>
+              <button class="qty-btn" data-action="cart-increase" data-key="${key}">+</button>
+              <button class="cart-item-remove" data-action="cart-remove" data-key="${key}">Hapus</button>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join("");
+  }
+  drawerTotalEl.textContent = formatRupiah(total);
+
+  // Ringkasan di dekat form pemesanan
+  if (keys.length === 0) {
+    summaryItemsEl.innerHTML = `<p class="empty-note">Keranjang masih kosong. Yuk pilih menu dulu 👆</p>`;
+  } else {
+    summaryItemsEl.innerHTML = keys.map((key) => {
+      const entry = cart[key];
+      const product = getProduct(entry.productId);
+      const label = entry.flavor ? `${product.name} (${entry.flavor})` : product.name;
+      return `
+        <div class="summary-item">
+          <span>${label} x${entry.qty}</span>
+          <span>${formatRupiah(product.price * entry.qty)}</span>
+        </div>
+      `;
+    }).join("");
+  }
+  summaryTotalEl.textContent = formatRupiah(total);
+}
+
+cartItemsEl.addEventListener("click", (e) => {
+  const btn = e.target.closest("button");
+  if (!btn) return;
+
+  const key = btn.dataset.key;
+  const action = btn.dataset.action;
+
+  if (action === "cart-increase") cart[key].qty += 1;
+  if (action === "cart-decrease") {
+    cart[key].qty -= 1;
+    if (cart[key].qty <= 0) delete cart[key];
+  }
+  if (action === "cart-remove") delete cart[key];
+
+  saveCart();
+  renderCart();
+});
+
+/* -----------------------------------------------------------
+   6. CART DRAWER: buka / tutup (dari header & tombol floating)
+   ----------------------------------------------------------- */
+
+const cartDrawer = document.getElementById("cartDrawer");
+const cartOverlay = document.getElementById("cartOverlay");
+
+function openCartDrawer() {
+  cartDrawer.classList.add("active");
+  cartOverlay.classList.add("active");
+}
+function closeCartDrawer() {
+  cartDrawer.classList.remove("active");
+  cartOverlay.classList.remove("active");
+}
+
+document.getElementById("cartToggleHeader").addEventListener("click", openCartDrawer);
+document.getElementById("floatingCart").addEventListener("click", openCartDrawer);
+document.getElementById("cartClose").addEventListener("click", closeCartDrawer);
+cartOverlay.addEventListener("click", closeCartDrawer);
+document.getElementById("goToForm").addEventListener("click", closeCartDrawer);
+
+/* -----------------------------------------------------------
+   7. MENU MOBILE (hamburger)
+   ----------------------------------------------------------- */
+
+const menuToggle = document.getElementById("menuToggle");
+const mainNav = document.getElementById("mainNav");
+menuToggle.addEventListener("click", () => mainNav.classList.toggle("open"));
+mainNav.querySelectorAll("a").forEach((link) =>
+  link.addEventListener("click", () => mainNav.classList.remove("open"))
+);
+
+/* -----------------------------------------------------------
+   8. CHECKOUT — SUSUN PESAN & KIRIM KE WHATSAPP
+   ----------------------------------------------------------- */
+
+const orderForm = document.getElementById("orderForm");
+
+orderForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+
+  const keys = Object.keys(cart).filter((k) => cart[k].qty > 0);
+  if (keys.length === 0) {
+    alert("Keranjang masih kosong. Silakan pilih menu di katalog terlebih dahulu ya 🙏");
+    document.getElementById("menu").scrollIntoView({ behavior: "smooth" });
+    return;
+  }
+
+  const name = document.getElementById("custName").value.trim();
+  const phone = document.getElementById("custPhone").value.trim();
+  const address = document.getElementById("custAddress").value.trim();
+  const delivery = document.getElementById("deliveryMethod").value;
+  const note = document.getElementById("custNote").value.trim();
+
+  // Susun daftar item
+  let itemLines = "";
+  keys.forEach((key) => {
+    const entry = cart[key];
+    const product = getProduct(entry.productId);
+    const flavorText = entry.flavor ? ` - ${entry.flavor}` : "";
+    itemLines += `- ${product.name}${flavorText} (${entry.qty} ${product.unit}) = ${formatRupiah(product.price * entry.qty)}\n`;
+  });
+
+  const total = getCartTotal();
+
+  // Susun pesan WhatsApp yang rapi
+  const message =
+`Halo BekuLezat, saya mau pesan:
+
+${itemLines}
+Total: ${formatRupiah(total)}
+
+Data Pemesan:
+Nama: ${name}
+No. WhatsApp: ${phone}
+Alamat/Kos: ${address}
+Metode: ${delivery}
+Catatan: ${note ? note : "-"}
+
+Mohon konfirmasi ketersediaan dan ongkir ya, terima kasih 🙏`;
+
+  const waUrl = `https://wa.me/${NOMOR_WA_ADMIN}?text=${encodeURIComponent(message)}`;
+  window.open(waUrl, "_blank");
+});
+
+/* -----------------------------------------------------------
+   9. INISIALISASI
+   ----------------------------------------------------------- */
+
+document.getElementById("year").textContent = new Date().getFullYear();
+
+renderCatalog();
+renderTestimonials();
+renderCart();
