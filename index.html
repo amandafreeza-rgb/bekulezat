@@ -516,6 +516,63 @@ img { max-width: 100%; display: block; }
 }
 .empty-note { font-size: 0.88rem; color: var(--color-muted); }
 
+/* ---------- Gambar produk (field "image" di PRODUCTS) ---------- */
+/* Foto menutupi emoji placeholder. Kalau file gambar tidak ditemukan, foto otomatis hilang & emoji tampil lagi */
+.product-photo .photo-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .4s ease;
+}
+.product-card:hover .photo-img { transform: scale(1.12); }
+.cart-item-icon { position: relative; overflow: hidden; }
+.cart-item-icon img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ---------- Rekapan Pesanan (Riwayat) ---------- */
+.history-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
+.history-toolbar span { font-weight: 800; font-size: 0.92rem; color: var(--color-primary-dark); }
+.history-clear-btn {
+  background: var(--color-white);
+  border: 1px solid var(--color-border);
+  color: var(--color-spice-dark);
+  font-weight: 700;
+  font-size: 0.85rem;
+  padding: 9px 16px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background .15s ease;
+}
+.history-clear-btn:hover { background: var(--color-bg-alt); }
+.history-list { display: flex; flex-direction: column; gap: 16px; }
+.history-card {
+  background: var(--color-white);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 20px 22px;
+}
+.history-head { margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px dashed var(--color-border); }
+.history-head h4 { margin: 0; font-size: 0.98rem; }
+.history-date { font-size: 0.78rem; color: var(--color-muted); font-weight: 700; }
+.history-items { display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px; }
+.history-item-row { display: flex; justify-content: space-between; gap: 12px; font-size: 0.88rem; }
+.history-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 800;
+  padding-top: 8px;
+  border-top: 2px solid var(--color-border);
+}
+.history-total strong { color: var(--color-primary-dark); }
+
 /* ---------- Footer ---------- */
 .site-footer {
   background: var(--color-dark);
@@ -756,6 +813,7 @@ img { max-width: 100%; display: block; }
       <a href="#menu">Menu</a>
       <a href="#testimoni">Testimoni</a>
       <a href="#pesan">Pesan</a>
+      <a href="#riwayat">Riwayat</a>
     </nav>
 
     <div class="header-actions">
@@ -929,6 +987,26 @@ img { max-width: 100%; display: block; }
   </div>
 </section>
 
+<!-- ======================= REKAPAN PESANAN ======================= -->
+<section class="section" id="riwayat">
+  <div class="container">
+    <div class="section-head">
+      <p class="section-eyebrow">Biar Gak Lupa</p>
+      <h2>Rekapan Pesanan Kamu</h2>
+      <p class="section-desc">Setiap kali checkout, pesanan otomatis tersimpan di sini (disimpan di browser kamu sendiri).</p>
+    </div>
+
+    <div class="history-toolbar">
+      <span id="historyCountLabel">Belum ada pesanan</span>
+      <button id="clearHistoryBtn" class="history-clear-btn">🗑️ Hapus Riwayat</button>
+    </div>
+
+    <div class="history-list" id="historyList">
+      <p class="empty-note">Rekapan pesanan masih kosong. Setelah checkout, pesananmu akan muncul di sini.</p>
+    </div>
+  </div>
+</section>
+
 <!-- ======================= FOOTER ======================= -->
 <footer class="site-footer" id="kontak">
   <div class="container footer-inner">
@@ -985,40 +1063,45 @@ img { max-width: 100%; display: block; }
 const NOMOR_WA_ADMIN = "6289673787320";
 
 // Daftar produk. Silakan tambah, hapus, atau edit langsung di sini.
-// icon         : emoji placeholder foto produk (lihat komentar "GANTI FOTO" di renderCatalog() untuk ganti ke <img> asli)
+// image        : path foto produk, contoh "images/menu-1.jpg". Taruh fotonya di folder "images" sebelah file ini.
+//                Kalau dikosongkan "" atau file tidak ditemukan, otomatis tampil emoji "icon" sebagai gantinya.
+// icon         : emoji cadangan yang tampil kalau foto belum ada
 // price        : harga dalam Rupiah (angka biasa, tanpa titik/koma)
 // tag          : label kecil di pojok foto (opsional, boleh dikosongkan jadi "")
 // flavors      : daftar pilihan sambal/bumbu. Kosongkan array [] kalau produk tidak butuh pilihan sambal.
 const PRODUCTS = [
   {
-    id: "baso-nugget-bawang",
-    name: "Baso & Nugget Kocok Gurih Bawang (Pedas Mantap)",
-    tag: "Best Seller 🔥",
+    id: "mix-bites-original",
+    name: "Mix Bites Original (Sambal Dipisah)",
+    tag: "Kalem",
     desc: "Mix bakso, sosis, nugget & otak-otak digoreng garing, dikocok sambal bawang gurih nagih.",
-    price: 20000,
+    price: 17000,
     unit: "porsi",
+    image: "images/menu-1.jpg", // <-- GANTI dengan foto produk ini
     icon: "🥡",
-    flavors: ["Pedas Sedang", "Extra Pedas 🔥🔥"]
+    flavors: ["Sambal Bawang", "Chili Oil"]
   },
   {
-    id: "mix-bites-chili-oil",
-    name: "Mix Bites Kocok Chili Oil Pedas Dower",
-    tag: "Pedas Dower 🌶️",
+    id: "mix-bites-sambal-bawang",
+    name: "Mix Bites Kocok Sambal Bawang Pedas Poll",
+    tag: "Pedas Poll 🌶️",
     desc: "Mix bakso, sosis, nugget & otak-otak dikocok bareng chili oil, pedasnya bikin nagih.",
-    price: 22000,
+    price: 21000,
     unit: "porsi",
+    image: "images/menu-2.jpg", // <-- GANTI dengan foto produk ini
     icon: "🌶️",
-    flavors: ["Chili Oil Sedang", "Chili Oil Extra Pedas 🔥🔥🔥"]
+    flavors: ["Pedas Sedang", "Extra Pedas 🔥🔥🔥"]
   },
   {
-    id: "paket-mentah-anti-lapar",
-    name: "Paket Mentah Anti-Lapar (Siap Goreng + Sambal Free)",
-    tag: "Stok Kos 🧊",
-    desc: "Paket vakum mentah (bakso, sosis, nugget, otak-otak) + sambal gratis, tinggal simpan di freezer.",
-    price: 35000,
+    id: "tahu-kocek",
+    name: "Tahu Kocek Sambal Bawang",
+    tag: "Versi Lain",
+    desc: "Tahu goreng yang dipotong-potong dicampur dengan potongan kol segar bareng sambelbawang.",
+    price: 15000,
     unit: "paket",
+    image: "images/menu-3.jpg", // <-- GANTI dengan foto produk ini
     icon: "🧊",
-    flavors: ["Sambal Bawang", "Sambal Chili Oil"]
+    flavors: ["Sambal Bawang"]
   },
   {
     id: "paket-nobar-rame",
@@ -1027,6 +1110,7 @@ const PRODUCTS = [
     desc: "Porsi jumbo campuran semua item, pas buat nobar bareng temen kos, isinya melimpah.",
     price: 45000,
     unit: "paket besar",
+    image: "images/menu-4.jpg", // <-- GANTI dengan foto produk ini
     icon: "🍿",
     flavors: ["Sambal Bawang", "Sambal Chili Oil", "Campur (Bawang + Chili Oil)"]
   }
@@ -1145,10 +1229,10 @@ function renderCatalog() {
     return `
       <div class="product-card">
         <div class="product-photo">
-          <!-- GANTI FOTO: hapus div.photo-illustration ini, ganti dengan
-               <img src="images/${product.id}.jpg" alt="${product.name}" style="width:100%;height:100%;object-fit:cover;">
-               supaya pakai foto produk asli -->
+          <!-- Emoji cadangan (tampil kalau foto belum ada) -->
           <div class="photo-illustration">${product.icon}</div>
+          <!-- Foto produk dari field "image" di array PRODUCTS. Kalau gagal dimuat, foto dihapus & emoji tampil -->
+          ${product.image ? `<img class="photo-img" src="${product.image}" alt="${product.name}" onerror="this.remove()">` : ""}
           ${product.tag ? `<span class="product-tag">${product.tag}</span>` : ""}
         </div>
         <div class="product-body">
@@ -1266,7 +1350,7 @@ function renderCart() {
       const product = getProduct(entry.productId);
       return `
         <div class="cart-item">
-          <div class="cart-item-icon">${product.icon}</div>
+          <div class="cart-item-icon">${product.icon}${product.image ? `<img src="${product.image}" alt="${product.name}" onerror="this.remove()">` : ""}</div>
           <div class="cart-item-info">
             <h4>${product.name}</h4>
             ${entry.flavor ? `<p class="cart-item-flavor">${entry.flavor}</p>` : ""}
@@ -1355,7 +1439,81 @@ mainNav.querySelectorAll("a").forEach((link) =>
 );
 
 /* -----------------------------------------------------------
-   8. CHECKOUT — SUSUN PESAN & KIRIM KE WHATSAPP
+   8. REKAPAN PESANAN (RIWAYAT) — disimpan di localStorage browser
+   ----------------------------------------------------------- */
+
+const historyListEl = document.getElementById("historyList");
+const historyCountLabelEl = document.getElementById("historyCountLabel");
+const clearHistoryBtn = document.getElementById("clearHistoryBtn");
+
+function loadHistory() {
+  try {
+    const saved = localStorage.getItem("bekulezat_order_history");
+    return saved ? JSON.parse(saved) : [];
+  } catch (e) {
+    return [];
+  }
+}
+
+function saveHistory() {
+  try {
+    localStorage.setItem("bekulezat_order_history", JSON.stringify(orderHistory));
+  } catch (e) {
+    /* localStorage tidak tersedia, riwayat tetap tampil tapi tidak tersimpan permanen */
+  }
+}
+
+let orderHistory = loadHistory();
+
+function addOrderToHistory(order) {
+  orderHistory.unshift(order); // pesanan terbaru tampil paling atas
+  saveHistory();
+  renderHistory();
+}
+
+function renderHistory() {
+  if (orderHistory.length === 0) {
+    historyCountLabelEl.textContent = "Belum ada pesanan";
+    historyListEl.innerHTML = `<p class="empty-note">Rekapan pesanan masih kosong. Setelah checkout, pesananmu akan muncul di sini.</p>`;
+    return;
+  }
+
+  historyCountLabelEl.textContent = `${orderHistory.length} pesanan tersimpan`;
+
+  historyListEl.innerHTML = orderHistory.map((order, index) => {
+    const itemsHtml = order.items.map((item) => `
+      <div class="history-item-row">
+        <span>${item.name}${item.flavor ? ` (${item.flavor})` : ""} x${item.qty}</span>
+        <span>${formatRupiah(item.subtotal)}</span>
+      </div>
+    `).join("");
+
+    return `
+      <div class="history-card">
+        <div class="history-head">
+          <h4>Pesanan #${orderHistory.length - index} — ${order.customer}</h4>
+          <div class="history-date">${order.date}</div>
+        </div>
+        <div class="history-items">${itemsHtml}</div>
+        <div class="history-total">
+          <span>Total</span>
+          <strong>${formatRupiah(order.total)}</strong>
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+clearHistoryBtn.addEventListener("click", () => {
+  if (orderHistory.length === 0) return;
+  if (!confirm("Hapus semua rekapan pesanan? Tindakan ini tidak bisa dibatalkan.")) return;
+  orderHistory = [];
+  saveHistory();
+  renderHistory();
+});
+
+/* -----------------------------------------------------------
+   9. CHECKOUT — SUSUN PESAN, SIMPAN KE REKAPAN, KIRIM KE WHATSAPP
    ----------------------------------------------------------- */
 
 const orderForm = document.getElementById("orderForm");
@@ -1378,11 +1536,14 @@ orderForm.addEventListener("submit", (e) => {
 
   // Susun daftar item
   let itemLines = "";
+  const orderItems = [];
   keys.forEach((key) => {
     const entry = cart[key];
     const product = getProduct(entry.productId);
     const flavorText = entry.flavor ? ` - ${entry.flavor}` : "";
-    itemLines += `- ${product.name}${flavorText} (${entry.qty} ${product.unit}) = ${formatRupiah(product.price * entry.qty)}\n`;
+    const subtotal = product.price * entry.qty;
+    itemLines += `- ${product.name}${flavorText} (${entry.qty} ${product.unit}) = ${formatRupiah(subtotal)}\n`;
+    orderItems.push({ name: product.name, flavor: entry.flavor, qty: entry.qty, subtotal: subtotal });
   });
 
   const total = getCartTotal();
@@ -1403,8 +1564,23 @@ Catatan: ${note ? note : "-"}
 
 Mohon konfirmasi ketersediaan dan ongkir ya, terima kasih 🙏`;
 
+  // Simpan ke Rekapan Pesanan sebelum membuka WhatsApp
+  addOrderToHistory({
+    date: new Date().toLocaleString("id-ID", { dateStyle: "medium", timeStyle: "short" }),
+    customer: name,
+    phone: phone,
+    items: orderItems,
+    total: total
+  });
+
   const waUrl = `https://wa.me/${NOMOR_WA_ADMIN}?text=${encodeURIComponent(message)}`;
   window.open(waUrl, "_blank");
+
+  // Kosongkan keranjang & form setelah pesanan tersimpan di rekapan
+  cart = {};
+  saveCart();
+  renderCart();
+  orderForm.reset();
 });
 
 /* -----------------------------------------------------------
@@ -1416,6 +1592,7 @@ document.getElementById("year").textContent = new Date().getFullYear();
 renderCatalog();
 renderTestimonials();
 renderCart();
+renderHistory();
 
 </script>
 </body>
